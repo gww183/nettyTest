@@ -9,11 +9,12 @@ import io.netty.handler.codec.MessageToByteEncoder;
 public class MsgpackEncoder extends MessageToByteEncoder<Object> {
 
 	@Override
-	protected void encode(ChannelHandlerContext context, Object arg1, ByteBuf arg2)
+	protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out)
 			throws Exception {
+		System.out.println("encode");
 		MessagePack msgpack = new MessagePack();
-		byte[] raw = msgpack.write(arg1);
-		arg2.writeBytes(raw);
+		byte[] raw = msgpack.write(msg);
+		out.writeBytes(raw);
 	}
 
 }

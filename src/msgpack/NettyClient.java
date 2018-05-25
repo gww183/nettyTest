@@ -13,7 +13,6 @@ public class NettyClient {
 		try {
 			nettyClient.createConnet(8080);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

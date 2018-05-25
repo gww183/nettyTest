@@ -11,14 +11,15 @@ import org.msgpack.MessagePack;
 public class MsgpackDecoder extends MessageToMessageDecoder<ByteBuf> {
 
 	@Override
-	protected void decode(ChannelHandlerContext content, ByteBuf arg1, List<Object> arg2)
+	protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out)
 			throws Exception {
+		System.out.println("msgpackDecoder");
 		final byte[] array;
-		final int length = arg1.readableBytes();
+		final int length = msg.readableBytes();
 		array = new byte[length];
-		arg1.getBytes(arg1.readerIndex(), array, 0, length);
-		MessagePack messagePack = new MessagePack();
-		arg2.add(messagePack.read(array));
+		msg.getBytes(msg.readerIndex(), array, 0, length);
+		MessagePack msgpack = new MessagePack();
+		out.add(msgpack.read(array));
 	}
 
 }
