@@ -3,8 +3,10 @@ package msgpack;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import netty.ChildChannelHandler;
 
 public class NettyServer {
 	
@@ -33,20 +35,24 @@ public class NettyServer {
 	 * @throws InterruptedException 
 	 */
 	public void run() throws InterruptedException {
-		NioEventLoopGroup boss = new NioEventLoopGroup();
-		NioEventLoopGroup worker = new NioEventLoopGroup();
-		
-		ServerBootstrap serverBootStrap = new ServerBootstrap();
-		serverBootStrap.group(boss, worker);
-		serverBootStrap.channel(NioServerSocketChannel.class);
-		serverBootStrap.option(ChannelOption.SO_BACKLOG, 1024);
-		serverBootStrap.childHandler(new EchoServer());
-		
-		ChannelFuture future = serverBootStrap.bind(this.port).sync();
-		
-		future.channel().closeFuture().sync();
-		worker.shutdownGracefully();
-		boss.shutdownGracefully();
+		EventLoopGroup bossGruop = new NioEventLoopGroup();
+        EventLoopGroup workGroup = new NioEventLoopGroup();
+        ServerBootstrap bootstrap = new ServerBootstrap();
+        bootstrap.group(bossGruop, workGroup)
+        		.channel(NioServerSocketChannel.class)
+                .option(ChannelOption.SO_BACKLOG, 1024).
+                childHandler(new EchoServer());
+
+        try {
+            ChannelFuture future = bootstrap.bind(port).sync();
+            future.channel().closeFuture().sync();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            bossGruop.shutdownGracefully();
+            workGroup.shutdownGracefully();
+        }
 	}
 	
 }
