@@ -1,12 +1,18 @@
 package serializable;
 
-import java.nio.ByteBuffer;
+import org.msgpack.annotation.Message;
 
+@Message
 public class UserInfo {
 	private String userName;
 	
 	private int userId;
 	
+	
+	
+	public UserInfo() {
+	}
+
 	public UserInfo buildUserName(String userName) {
 		this.userName = userName;
 		return this;
